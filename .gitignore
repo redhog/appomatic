@@ -1,0 +1,7 @@
+deps
+*.pyc
+*.db
+*~
+media/photologue/photos
+media/photologue/temp
+build

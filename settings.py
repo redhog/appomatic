@@ -1,4 +1,39 @@
-# Django settings for appomatic project.
+# -*- coding: utf-8 -*-
+import os
+import os.path
+import sys
+import itertools
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+def get_app(name):
+    try:
+        with open(os.path.join(PROJECT_DIR, 'apps', name, '__app__.py')) as f:
+            res = {'NAME': name, 'INSTALLED_APPS': [name]}
+            exec f in res
+            return res
+    except Exception, e:
+        print "Error loading app %s: %s" % (name, e)
+        return None
+def app_cmp(a, b):
+    if (   a['NAME'] in b.get('POST', [])
+        or b['NAME'] in a.get('PRE', [])):
+        return 1
+    elif (   b['NAME'] in a.get('POST', [])
+          or a['NAME'] in b.get('PRE', [])):
+        return -1
+    return 0
+LOCAL_APPS = [app
+              for app in (get_app(name)
+                          for name in os.listdir(os.path.join(PROJECT_DIR, 'apps')))
+              if app]
+LOCAL_APPS.sort(app_cmp)
+def get_app_config_list(config_name):
+    return tuple(value
+                 for value in itertools.chain.from_iterable(app.get(config_name, [])
+                                                            for app in LOCAL_APPS))
+
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,12 +46,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_DIR, 'mycms.db'),
     }
 }
 
@@ -43,19 +74,23 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-# Absolute path to the directory that holds media.
+# Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
+
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
+
+STATIC_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'gig3(ofdyzr_g*lj-%uzh&k3ct2_y1cgh4h5321*xf8fnybd%k'
@@ -64,7 +99,6 @@ SECRET_KEY = 'gig3(ofdyzr_g*lj-%uzh&k3ct2_y1cgh4h5321*xf8fnybd%k'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -73,14 +107,20 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+) + get_app_config_list('MIDDLEWARE_CLASSES')
 
-ROOT_URLCONF = 'appomatic.urls'
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.request',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+) + get_app_config_list('TEMPLATE_CONTEXT_PROCESSORS')
+
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_DIR, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -89,8 +129,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-)
+    'django.contrib.admin',
+    'django.contrib.staticfiles',
+    'django.contrib.comments',
+) + get_app_config_list('INSTALLED_APPS')
+
+for app in LOCAL_APPS:
+    p = os.path.join(PROJECT_DIR, 'apps', app['NAME'], '__settings__.py')
+    if os.path.exists(p):
+        with open(p) as f:
+            exec f
