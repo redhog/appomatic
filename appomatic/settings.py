@@ -73,7 +73,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'mycms.db'),
+        'NAME': os.path.join(VIRTUALENV_DIR, 'appomatic.db'),
     }
 }
 
