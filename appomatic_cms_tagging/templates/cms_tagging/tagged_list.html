@@ -1,0 +1,12 @@
+{% load cms_tags menu_tags %}
+
+<h1>Pages tagged
+{% for tag in object.tags.all %}
+  <a href="">{{ tag }}</a>
+{% endfor %}:</h1>
+
+{% for tagged_page in tagged_pages %}
+  <h1><a href="{% page_url tagged_page %}">{% page_attribute "page_title" tagged_page %}</a></h1>
+  <div>{{ tagged_page.publication_date }} by {{ tagged_page.created_by }}</div>
+  {% show_placeholder "main" tagged_page %}
+{% endfor %}
