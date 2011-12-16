@@ -20,4 +20,7 @@ setup(
     packages = find_packages(),
     scripts = [],
     package_data = {'': ['*.txt']},
+    entry_points = {'console_scripts': [
+            'appomatic = appomatic.manage:main',
+            ]},
 )

@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     *(url(r'^', include('%s.__urls__' % (app['NAME'],)))
       for app in settings.LOCAL_APPS
-      if os.path.exists(os.path.join(settings.PROJECT_DIR, 'apps', app['NAME'], '__urls__.py')))
+      if os.path.exists(os.path.join(app['PATH'], '__urls__.py')))
 )
 
 if settings.DEBUG:

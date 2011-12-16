@@ -4,12 +4,18 @@ import os.path
 import sys
 import itertools
 
+VIRTUALENV_DIR = os.environ['VIRTUAL_ENV']
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+APP_DIR = os.path.join(VIRTUALENV_DIR, "apps")
+sys.path.append(APP_DIR)
 
 def get_app(name):
     try:
-        with open(os.path.join(PROJECT_DIR, 'apps', name, '__app__.py')) as f:
-            res = {'NAME': name, 'INSTALLED_APPS': [name]}
+        mod = __import__(name)
+        path = os.path.dirname(mod.__file__)
+        with open(os.path.join(path, '__app__.py')) as f:
+            res = {'NAME': name, 'INSTALLED_APPS': [name], 'PATH': path}
             exec f in res
             return res
     except Exception, e:
@@ -25,7 +31,7 @@ def app_cmp(a, b):
     return 0
 LOCAL_APPS = [app
               for app in (get_app(name)
-                          for name in os.listdir(os.path.join(PROJECT_DIR, 'apps')))
+                          for name in os.listdir(APP_DIR))
               if app]
 LOCAL_APPS.sort(app_cmp)
 def get_app_config_list(config_name):
@@ -135,7 +141,7 @@ INSTALLED_APPS = (
 ) + get_app_config_list('INSTALLED_APPS')
 
 for app in LOCAL_APPS:
-    p = os.path.join(PROJECT_DIR, 'apps', app['NAME'], '__settings__.py')
+    p = os.path.join(app['PATH'], '__settings__.py')
     if os.path.exists(p):
         with open(p) as f:
             exec f
