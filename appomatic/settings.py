@@ -10,6 +10,23 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 APP_DIR = os.path.join(VIRTUALENV_DIR, "apps")
 sys.path.append(APP_DIR)
 
+
+def get_pip_apps(prefix = ''):
+    # This is mostly copied from pip.commands.freeze
+    import pkg_resources
+    import pip.util
+    dependency_links = []
+    for dist in pkg_resources.working_set:
+        if dist.has_metadata('dependency_links.txt'):
+            dependency_links.extend(dist.get_metadata_lines('dependency_links.txt'))
+    installations = {}
+    for dist in pip.util.get_installed_distributions(local_only=True):
+        req = pip.FrozenRequirement.from_dist(dist, dependency_links, find_tags=False)
+        installations[req.name] = req
+    for installation in sorted(installations.values(), key=lambda x: x.name):
+        name = installation.name.replace("-", "_")
+        if name.startswith(prefix):
+            yield name
 def get_app(name):
     try:
         mod = __import__(name)
@@ -29,9 +46,12 @@ def app_cmp(a, b):
           or a['NAME'] in b.get('PRE', [])):
         return -1
     return 0
+possible_app_names = list(get_pip_apps('appomatic_'))
+if os.path.isdir(APP_DIR):
+    possible_app_names += os.listdir(APP_DIR)
 LOCAL_APPS = [app
               for app in (get_app(name)
-                          for name in os.listdir(APP_DIR))
+                          for name in possible_app_names)
               if app]
 LOCAL_APPS.sort(app_cmp)
 def get_app_config_list(config_name):
