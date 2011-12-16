@@ -15,7 +15,7 @@ setup(
     # download_url =
     # classifiers =
 
-    install_requires = ['django==1.3.1'],
+    install_requires = ['appomatic-django-cms', 'appomatic-tagging'],
 
     packages = find_packages(),
     scripts = [],
