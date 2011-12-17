@@ -20,4 +20,5 @@ setup(
     packages = find_packages(),
     scripts = [],
     package_data = {'': ['*.html']},
+    include_package_data=True,
 )

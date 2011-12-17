@@ -1,5 +1,5 @@
 INSTALLED_APPS = ['cmsplugin_phlog']
-PRE = ['appwrapper_photolog', 'appwrapper_cms']
+PRE = ['appomatic_photolog', 'appomatic_django_cms']
 CMS_APPLICATIONS_URLS = (
     ('cmsplugin_phlog.urls', 'Photologue app'),
 )
