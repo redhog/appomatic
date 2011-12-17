@@ -3,6 +3,7 @@ import os
 import os.path
 import sys
 import itertools
+import appomatic.utils.app
 
 VIRTUALENV_DIR = os.environ['VIRTUAL_ENV']
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -10,56 +11,16 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 APP_DIR = os.path.join(VIRTUALENV_DIR, "apps")
 sys.path.append(APP_DIR)
 
-
-def get_pip_apps(prefix = ''):
-    # This is mostly copied from pip.commands.freeze
-    import pkg_resources
-    import pip.util
-    dependency_links = []
-    for dist in pkg_resources.working_set:
-        if dist.has_metadata('dependency_links.txt'):
-            dependency_links.extend(dist.get_metadata_lines('dependency_links.txt'))
-    installations = {}
-    for dist in pip.util.get_installed_distributions(local_only=True):
-        req = pip.FrozenRequirement.from_dist(dist, dependency_links, find_tags=False)
-        installations[req.name] = req
-    for installation in sorted(installations.values(), key=lambda x: x.name):
-        name = installation.name.replace("-", "_")
-        if name.startswith(prefix):
-            yield name
-def get_app(name):
-    try:
-        mod = __import__(name)
-        path = os.path.dirname(mod.__file__)
-        with open(os.path.join(path, '__app__.py')) as f:
-            res = {'NAME': name, 'INSTALLED_APPS': [name], 'PATH': path}
-            exec f in res
-            return res
-    except Exception, e:
-        print "Error loading app %s: %s" % (name, e)
-        return None
-def app_cmp(a, b):
-    if (   a['NAME'] in b.get('POST', [])
-        or b['NAME'] in a.get('PRE', [])):
-        return 1
-    elif (   b['NAME'] in a.get('POST', [])
-          or a['NAME'] in b.get('PRE', [])):
-        return -1
-    return 0
-possible_app_names = list(get_pip_apps('appomatic_'))
-if os.path.isdir(APP_DIR):
-    possible_app_names += os.listdir(APP_DIR)
-LOCAL_APPS = [app
-              for app in (get_app(name)
-                          for name in possible_app_names)
-              if app]
-LOCAL_APPS.sort(app_cmp)
 def get_app_config_list(config_name):
     return tuple(value
                  for value in itertools.chain.from_iterable(app.get(config_name, [])
                                                             for app in LOCAL_APPS))
 
+possible_app_names = list(appomatic.utils.app.get_pip_apps('appomatic_'))
+if os.path.isdir(APP_DIR):
+    possible_app_names += os.listdir(APP_DIR)
 
+LOCAL_APPS = appomatic.utils.app.get_apps(possible_app_names)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -155,7 +116,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.admin',
     'django.contrib.staticfiles',
     'django.contrib.comments',
 ) + get_app_config_list('INSTALLED_APPS')

@@ -1,12 +1,8 @@
 from django.conf.urls.defaults import *
-from django.contrib import admin
 from django.conf import settings
 import os.path
 
-admin.autodiscover()
-
 urlpatterns = patterns('',
-    url(r'^admin/', include(admin.site.urls)),
     *(url(r'^', include('%s.__urls__' % (app['NAME'],)))
       for app in settings.LOCAL_APPS
       if os.path.exists(os.path.join(app['PATH'], '__urls__.py')))
