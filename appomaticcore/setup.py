@@ -2,8 +2,8 @@
 
 from setuptools import setup, find_packages
 setup(
-    name = "appomatic",
-    version = "0.0.3",
+    name = "appomaticcore",
+    version = "0.0.2",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
@@ -15,9 +15,12 @@ setup(
     # download_url =
     # classifiers =
 
-    install_requires = ['appomaticcore', 'appomatic_appadmin'],
+    install_requires = ['django==1.3.1'],
 
-    packages = [],
+    packages = find_packages(),
     scripts = [],
     package_data = {'': ['*.txt']},
+    entry_points = {'console_scripts': [
+            'appomatic = appomatic.manage:main',
+            ]},
 )
