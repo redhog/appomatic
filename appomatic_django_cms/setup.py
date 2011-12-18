@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "appomatic_django_cms",
-    version = "0.0.1",
+    version = "0.0.2",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
