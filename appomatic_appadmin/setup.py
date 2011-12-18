@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "appomatic_appadmin",
-    version = "0.0.2",
+    version = "0.0.3",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
@@ -15,7 +15,7 @@ setup(
     # download_url =
     # classifiers =
 
-    install_requires = ['appomatic'],
+    install_requires = ['appomatic', 'appomatic_admin'],
 
     packages = find_packages(),
     scripts = [],
