@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "appomaticcore",
-    version = "0.0.2",
+    version = "0.0.3",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",

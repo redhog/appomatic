@@ -33,7 +33,7 @@ def load_app(app):
             exec f in app
             return app
     except Exception, e:
-        print "Error loading app %s: %s" % (name, e)
+        print "Error loading app %s: %s" % (app['NAME'], e)
         return None
 
 def apps_to_parent_child_list(apps):
