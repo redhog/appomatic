@@ -2,9 +2,6 @@ deps
 *.pyc
 *.db
 *~
-media/photologue/photos
-media/photologue/temp
 build
-appomatic.egg-info
-build
+*.egg-info
 dist
