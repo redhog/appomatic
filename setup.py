@@ -2,20 +2,20 @@
 
 from setuptools import setup, find_packages
 setup(
-    name = "appomatic_cms_tagging",
-    version = "0.0.1",
+    name = "appomatic_appadmin",
+    version = "0.0.2",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
-    description = "Adds tagging support to django-cms",
+    description = "Django admin page to administer appomatic apps",
     license = "GPL",
-    keywords = "appomatic django-tagging django-cms",
-    url = "http://github.com/redhog/appomatic_cms_tagging",
+    keywords = "appomatic django-admin",
+    url = "http://github.com/redhog/appomatic_appadmin",
     # long_description =
     # download_url =
     # classifiers =
 
-    install_requires = ['appomatic-django-cms', 'appomatic-tagging'],
+    install_requires = ['appomatic'],
 
     packages = find_packages(),
     scripts = [],
