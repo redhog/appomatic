@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load adminmedia admin_list i18n %}
+{% load adminmedia i18n %}
+{% load url from future %}
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
+  {% endif %}
+  {% if cl.formset or action_form %}
+    {% url 'admin:jsi18n' as jsi18nurl %}
+    <script type="text/javascript" src="{{ jsi18nurl|default:'../../jsi18n/' }}"></script>
+  {% endif %}
+  {{ media.css }}
+  {% if not actions_on_top and not actions_on_bottom %}
+    <style>
+      #changelist table thead th:first-child {width: inherit}
+    </style>
+  {% endif %}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media.js }}
+{% if action_form %}{% if actions_on_top or actions_on_bottom %}
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% if not is_popup %}
+  {% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href="../../">
+        {% trans "Home" %}
+      </a>
+       &rsaquo;
+       <a href="../../">
+         Appomatic
+      </a>
+      </a>
+       &rsaquo;
+       <a href="../">
+         Applications
+      </a>
+      &rsaquo;
+      Download new applications
+    </div>
+  {% endblock %}
+{% endif %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+  <h1>Download new applications</h1>
+  <div id="content-main">
+    <div class="module" id="changelist">
+      <div id="toolbar">
+        <form id="changelist-search" action="" method="get">
+          <div><!-- DIV needed for valid HTML -->
+            <label for="searchbar"><img src="/static/admin/img/admin/icon_searchbox.png" alt="Search"></label>
+            <input type="text" size="40" name="q" value="" id="searchbar">
+            <input type="submit" value="Search">
+          </div>
+        </form>
+      </div>
+      {% block result_list %}
+	<form id="changelist-form" action="" method="post">
+	  {% csrf_token %}
+	  <input type="hidden" name="q" value="{{q}}" />
+	  <div class="actions">
+	    <label>
+	      Action:
+	      <select name="action">
+		<option value="" selected="selected">---------</option>
+		<option value="install_selected">Install selected</option>
+	      </select>
+	    </label>
+	    <button type="submit" class="button" title="Run the selected action" name="index" value="0">Go</button>
+	    <script type="text/javascript">var _actions_icnt="1";</script>
+	    <span class="action-counter" style="display: inline; ">0 of 1 selected</span>
+	  </div>
+	  <div class="results">
+	    <table cellspacing="0" id="result_list">
+	      <thead>
+		<tr>
+		 <th scope="col" class="action-checkbox-column">
+		   <input type="checkbox" id="action-toggle" style="display: inline-block; ">
+		  </th>
+		  <th scope="col">
+		    <a href="?ot=desc&amp;o=1">Name</a>
+		  </th>
+		  <th scope="col">
+		    <a href="?ot=asc&amp;o=2">Description</a>
+		  </th>
+		</tr>
+	      </thead>
+	      <tbody>
+		{% for app in found_apps %}
+		  <tr class="row1">
+		    <td class="action-checkbox">
+	              <input type="checkbox" class="action-select" value="{{app.NAME}}" name="_selected_action">
+		    </td>
+		    <th><a href="{{app.SOURCE}}/">{{app.NAME}}</a></th>
+		    <td>{{app.DESCRIPTION}}</td>
+		  </tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
+	  </div>
+	</form>
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
