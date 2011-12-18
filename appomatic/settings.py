@@ -16,11 +16,9 @@ def get_app_config_list(config_name):
                  for value in itertools.chain.from_iterable(app.get(config_name, [])
                                                             for app in LOCAL_APPS))
 
-possible_app_names = list(appomatic.utils.app.get_pip_apps('appomatic_'))
-if os.path.isdir(APP_DIR):
-    possible_app_names += os.listdir(APP_DIR)
-
-LOCAL_APPS = appomatic.utils.app.get_apps(possible_app_names)
+LOCAL_APPS = appomatic.utils.app.load_apps(
+    list(appomatic.utils.app.get_pip_apps())
+    + list(appomatic.utils.app.get_dir_apps(APP_DIR)))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -125,3 +123,6 @@ for app in LOCAL_APPS:
     if os.path.exists(p):
         with open(p) as f:
             exec f
+
+if DEBUG:
+    print "Installed apps: " + ', '.join(app['NAME'] for app in LOCAL_APPS)
