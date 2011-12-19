@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "appomaticcore",
-    version = "0.0.3",
+    version = "0.0.4",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
@@ -15,7 +15,7 @@ setup(
     # download_url =
     # classifiers =
 
-    install_requires = ['django==1.3.1'],
+    install_requires = ['django==1.3.1', 'pip==0.8.1'],
 
     packages = find_packages(),
     scripts = [],
