@@ -1,8 +1,20 @@
 import os
+import os.path
 import sys
 
-activate_this = '/home/test/myprofile/bin/activate_this.py'
-execfile(activate_this, dict(__file__=activate_this))
+def find_virtualenv(path = __file__):
+    while path and path != '/':
+        if os.path.exists(os.path.join(path, 'bin/activate_this.py')):
+            return path
+        path = os.path.dirname(path)
+    raise Exception("Unable to find virtualenv (you must have moved wsgi.py outside the virtualenv!).")
+
+virtualenv = find_virtualenv()
+activate = os.path.join(virtualenv, 'bin/activate_this.py')
+execfile(activate, dict(__file__=activate))
+os.environ['VIRTUAL_ENV'] = virtualenv
+
+sys.path[0:0] = [os.path.dirname(__file__)]
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
