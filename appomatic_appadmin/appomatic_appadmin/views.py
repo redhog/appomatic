@@ -24,7 +24,7 @@ def index(request):
 
     return django.shortcuts.render_to_response(
         'appomatic_appadmin/index.html',
-        {"installed_apps": apps_by_source(settings.LOCAL_APPS),
+        {"installed_apps": apps_by_source(settings.APPOMATIC_APPS),
 
 
          },
@@ -40,9 +40,7 @@ def add(request):
             django.contrib.messages.add_message(request, django.contrib.messages.INFO, 'Successfully installed %s' % (name,))
         appomatic_appadmin.utils.reload.reload(2)
 
-    found_apps = []
-    if query:
-        found_apps = appomatic_appadmin.utils.app.search_pip_apps(query)
+    found_apps = appomatic_appadmin.utils.app.search_pip_apps(query)
 
     return django.shortcuts.render_to_response(
         'appomatic_appadmin/add.html',

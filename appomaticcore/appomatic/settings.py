@@ -14,11 +14,13 @@ sys.path.append(APP_DIR)
 def get_app_config_list(config_name):
     return tuple(value
                  for value in itertools.chain.from_iterable(app.get(config_name, [])
-                                                            for app in LOCAL_APPS))
+                                                            for app in APPOMATIC_APP_PARTS))
 
-LOCAL_APPS = appomatic.utils.app.load_apps(
+APPOMATIC_APPS = appomatic.utils.app.load_apps(
     list(appomatic.utils.app.get_pip_apps())
     + list(appomatic.utils.app.get_dir_apps(APP_DIR)))
+
+APPOMATIC_APP_PARTS = appomatic.utils.app.sort_apps(APPOMATIC_APPS)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -118,11 +120,12 @@ INSTALLED_APPS = (
     'django.contrib.comments',
 ) + get_app_config_list('INSTALLED_APPS')
 
-for app in LOCAL_APPS:
-    p = os.path.join(app['PATH'], '__settings__.py')
+for part in APPOMATIC_APP_PARTS:
+    p = os.path.join(part['PATH'], '__settings__.py')
     if os.path.exists(p):
         with open(p) as f:
             exec f
 
 if DEBUG:
-    print "Installed apps: " + ', '.join(app['NAME'] for app in LOCAL_APPS)
+    print "Installed apps: " + ', '.join(app['NAME'] for app in APPOMATIC_APPS)
+    print "  Parts: " + ', '.join(part['NAME'] for part in APPOMATIC_APP_PARTS)

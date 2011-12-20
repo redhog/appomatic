@@ -47,6 +47,7 @@ def transform_hits(hits):
     return package_list
 
 def search_pip_apps(query = '', prefix = 'appomatic_', index_url = 'http://pypi.python.org/pypi'):
+    if not query: query = "appomatic"
     def mangle(package):
         package['NAME'] = package['name']
         package['DESCRIPTION'] = package['summary']

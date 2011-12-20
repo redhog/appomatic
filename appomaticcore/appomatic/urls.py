@@ -4,7 +4,7 @@ import os.path
 
 urlpatterns = patterns('',
     *(url(r'^', include('%s.__urls__' % (app['NAME'],)))
-      for app in settings.LOCAL_APPS
+      for app in settings.APPOMATIC_APP_PARTS
       if os.path.exists(os.path.join(app['PATH'], '__urls__.py')))
 )
 
