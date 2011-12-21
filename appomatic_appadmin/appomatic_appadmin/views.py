@@ -40,7 +40,9 @@ def add(request):
             django.contrib.messages.add_message(request, django.contrib.messages.INFO, 'Successfully installed %s' % (name,))
         appomatic_appadmin.utils.reload.reload(2)
 
-    found_apps = appomatic_appadmin.utils.app.search_pip_apps(query)
+    installed_app_names = [app['NAME'] for app in settings.APPOMATIC_APPS]
+    found_apps = [app for app in appomatic_appadmin.utils.app.search_pip_apps(query)
+                  if app['name'] not in installed_app_names]
 
     return django.shortcuts.render_to_response(
         'appomatic_appadmin/add.html',

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "appomatic_appadmin",
-    version = "0.0.3",
+    version = "0.0.5",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",

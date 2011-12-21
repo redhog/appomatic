@@ -14,7 +14,7 @@ setuptools.command.easy_install.is_python_script = is_python_script
 
 setuptools.setup(
     name = "appomaticcore",
-    version = "0.0.4",
+    version = "0.0.5",
 
     author = "RedHog (Egil Moeller)",
     author_email = "egil.moller@freecode.no",
