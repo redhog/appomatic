@@ -19,6 +19,6 @@ setup(
 
     packages = find_packages(),
     scripts = [],
-    package_data = {'': ['*.html']},
+    package_data = {'': ['*.html', '*.js', '*.css']},
     include_package_data=True,
 )

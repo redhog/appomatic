@@ -2,6 +2,8 @@
 {% load adminmedia admin_list i18n %}
 {% load adminmedia i18n %}
 {% load url from future %}
+{% load static %}
+
 {% block extrastyle %}
   {{ block.super }}
   <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
@@ -18,6 +20,9 @@
       #changelist table thead th:first-child {width: inherit}
     </style>
   {% endif %}
+  <script type="text/javascript" src="{% get_static_prefix %}appomatic_appadmin/js/jquery.js"></script>
+  <script type="text/javascript" src="{% get_static_prefix %}appomatic_appadmin/js/progress.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}appomatic_appadmin/css/progress.css" />
 {% endblock %}
 
 {% block extrahead %}
@@ -64,7 +69,7 @@
     </ul>
     <div class="module" id="changelist">
       {% block result_list %}
-	<form id="changelist-form" action="" method="post">
+	<form id="changelist-form" action="{% url 'appomatic_appadmin.views.action' %}" method="post">
 	  {% csrf_token %}
 	  <div class="actions">
 	    <label>
@@ -74,7 +79,7 @@
 		<option value="uninstall_selected">Uninstall selected</option>
 	      </select>
 	    </label>
-	    <button type="submit" class="button" title="Run the selected action" name="index" value="0">Go</button>
+	    <button type="button" class="button" title="Run the selected action" name="index" value="0" onclick="submitFormWithProgress();">Go</button>
 	    <script type="text/javascript">var _actions_icnt="1";</script>
 	    <span class="action-counter" style="display: inline; ">0 of 1 selected</span>
 	  </div>

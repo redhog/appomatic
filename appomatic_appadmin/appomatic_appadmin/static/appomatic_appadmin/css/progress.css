@@ -1,0 +1,61 @@
+.modal {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: 0.2;
+  background: #000000;
+}
+
+.popup {
+  z-index: 3;
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 10%;
+  bottom: 10%;
+  padding: 10px;
+  overflow: hidden;
+
+  opacity: 1.0;
+  background: #ffffff;
+  border: 1px solid #CCC;
+}
+
+.popup h1 {
+  margin-top: -10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  font-size: 18px;
+  font-weight: normal;
+  color: #F4F379;
+  background: #417690;
+}
+
+.progress {
+  position: relative;
+  border: 1px solid black;
+  height: 15px;
+  margin-bottom: 10px;
+}
+
+.progress_meter {
+  background: #417690;
+  height: 15px;
+}
+
+.popup .output {
+  position: absolute;
+  bottom: 10px;
+  top: 75px;
+  overflow: auto;
+  right: 10px;
+  left: 10px;
+  background: #000000;
+  color: #ffffff;
+  font-family: monospace;
+}

@@ -26,6 +26,7 @@ def reload(timeout = None):
     else:
         class Thread(threading.Thread):
             def run(self, *arg, **kw):
-                time.sleep(timeout)
+                if timeout:
+                    time.sleep(timeout)
                 reload()
         Thread().start()
