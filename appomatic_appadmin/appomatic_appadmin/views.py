@@ -20,14 +20,6 @@ def apps_by_source(apps):
     return res
 
 def index(request):
-    action = request.REQUEST.get('action', '')
-
-    if action == 'uninstall_selected':
-        for name in appomatic_appadmin.utils.app.uninstall_pip_apps(
-            *request.REQUEST.getlist('_selected_action')):
-            django.contrib.messages.add_message(request, django.contrib.messages.INFO, 'Successfully uninstalled %s' % (name,))
-        appomatic_appadmin.utils.reload.reload(2)
-
     return django.shortcuts.render_to_response(
         'appomatic_appadmin/index.html',
         {"installed_apps": apps_by_source(settings.APPOMATIC_APPS),
@@ -37,14 +29,7 @@ def index(request):
         context_instance=django.template.RequestContext(request))
 
 def add(request):
-    action = request.REQUEST.get('action', '')
     query = request.REQUEST.get('q', '')
-
-    if action == 'install_selected':
-        for name in appomatic_appadmin.utils.app.install_pip_apps(
-            *request.REQUEST.getlist('_selected_action')):
-            django.contrib.messages.add_message(request, django.contrib.messages.INFO, 'Successfully installed %s' % (name,))
-        appomatic_appadmin.utils.reload.reload(2)
 
     installed_app_names = [app['NAME'] for app in settings.APPOMATIC_APPS]
     found_apps = [app for app in appomatic_appadmin.utils.app.search_pip_apps(query)
@@ -74,6 +59,10 @@ def action(request):
                 out.write(json.dumps({"percent_done": int(100.0 * idx / total), "status": "Installing " + name}) + "\n")
                 out.flush()
                 appomatic_appadmin.utils.app.install_pip_apps(name)
+
+    elif action == 'reload':
+        def fn(out):
+            pass
 
     return django.http.HttpResponse(json.dumps({"pid": progressable(fn, reload=True)}), content_type="text/json")
 

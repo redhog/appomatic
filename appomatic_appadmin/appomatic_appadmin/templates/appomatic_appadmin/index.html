@@ -66,6 +66,9 @@
       <li>
 	<a href="add/" class="addlink">Download new applications</a>
       </li>
+      <li>
+	<a href="javascript:void(0)" class="reloadlink" onclick="callWithProgress('{% url 'appomatic_appadmin.views.action' %}', {action:'reload'}, 'Reloading server');">Reload</a>
+      </li>
     </ul>
     <div class="module" id="changelist">
       {% block result_list %}
