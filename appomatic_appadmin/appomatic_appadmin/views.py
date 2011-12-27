@@ -10,6 +10,7 @@ import tempfile
 import threading
 import json
 import time
+import appomatic_appadmin.utils.action
 
 def apps_by_source(apps):
     res = {}
@@ -48,7 +49,7 @@ def action(request):
         def fn(out):
             total = len(lst) + 1
             for idx, name in enumerate(lst):
-                out.write(json.dumps({"percent_done": int(100.0 * idx / total), "status": "Uninstalling " + name}) + "\n")
+                out.write(json.dumps({"done": 0.5 * idx / total, "status": "Uninstalling " + name}) + "\n")
                 out.flush()
                 appomatic_appadmin.utils.app.uninstall_pip_apps(name)
 
@@ -56,9 +57,10 @@ def action(request):
         def fn(out):
             total = len(lst) + 1
             for idx, name in enumerate(lst):
-                out.write(json.dumps({"percent_done": int(100.0 * idx / total), "status": "Installing " + name}) + "\n")
+                out.write(json.dumps({"done": 0.5 * idx / total, "status": "Installing " + name}) + "\n")
                 out.flush()
                 appomatic_appadmin.utils.app.install_pip_apps(name)
+            appomatic_appadmin.utils.action.SyncDb(out, k=0.5, m=0.5)
 
     elif action == 'reload':
         def fn(out):
@@ -73,7 +75,7 @@ def progress(request, pid):
     assert '/' not in pid and '.' not in pid
     path = os.path.join(tempfile.gettempdir(), PROGRESS_PREFIX + pid)
     if not os.path.exists(path):
-        output = [json.dumps({"percent_done": 100, "status": "Done"})]
+        output = [json.dumps({"done": 1, "status": "Done"})]
     else:
         with open(path) as f:
             output = [line[:-1] for line in f]
@@ -82,12 +84,12 @@ def progress(request, pid):
 def progressable(fn, reload = False, *arg, **kw):
     fd, path = tempfile.mkstemp(prefix=PROGRESS_PREFIX)
     f = os.fdopen(fd, "w")
-    f.write(json.dumps({"percent_done": 0, "status": ""}) + "\n")
+    f.write(json.dumps({"done": 0, "status": ""}) + "\n")
     f.flush()
     def wrapper():
         fn(f, *arg, **kw)
         if reload:
-            f.write(json.dumps({"percent_done": 99, "status": "Restarting server"}) + "\n")
+            f.write(json.dumps({"done": 0.99, "status": "Restarting server"}) + "\n")
             f.flush()
             # Let the client fetch the status before we unlink the file
             time.sleep(2)

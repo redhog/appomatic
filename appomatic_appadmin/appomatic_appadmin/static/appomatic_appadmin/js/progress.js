@@ -8,11 +8,13 @@ function callWithProgress(url, data, description) {
       dataType: 'json',
       url: "/admin/appomatic_appadmin/application/progress/" +  $('body .popup').data('pid'),
       success: function (data) {
+         console.log(["callWithProgress", data]);
+
 	var last = data[data.length-1];
-	$('body .popup .progress_meter').css('width', last.percent_done + "%");
+	 $('body .popup .progress_meter').css('width', (100 * last.done) + "%");
 	$('body .popup .status').html(last.status);
 	$('body .popup .output').html(data.map(function(d) { return "<div>"+d.status+"</div>"; }).join(""));
-	if (last.percent_done != 100) {
+	if (last.done < 1) {
   	  setTimeout(update, 1000);
         } else {
   	  setTimeout(done, 1000);
