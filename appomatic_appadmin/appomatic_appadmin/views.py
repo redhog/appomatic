@@ -11,6 +11,7 @@ import threading
 import json
 import time
 import appomatic_appadmin.utils.action
+import urllib
 
 def apps_by_source(apps):
     res = {}
@@ -43,30 +44,54 @@ def add(request):
 
 
 def action(request):
-    action = request.REQUEST.get('action', '')
-    lst = request.REQUEST.getlist('_selected_action')
-    if action == 'uninstall_selected':
-        def fn(out):
-            total = len(lst) + 1
-            for idx, name in enumerate(lst):
-                out.write(json.dumps({"done": 0.5 * idx / total, "status": "Uninstalling " + name}) + "\n")
+    class Actions(object):
+        def __init__(self, lst):
+            self.lst = lst
+
+        def _urlencode(self, **q):
+            data = []
+            for name, value in q.items():
+                if isinstance(value, (tuple, list)):
+                    for part in value:
+                        data.append((name, part))
+                else:
+                    data.append((name, value))
+            return urllib.urlencode(data)
+
+        def uninstall_selected(self, out):
+            total = len(self.lst) + 1
+            for idx, name in enumerate(self.lst):
+                out.write(json.dumps({"done": idx / total, "status": "Uninstalling " + name}) + "\n")
                 out.flush()
                 appomatic_appadmin.utils.app.uninstall_pip_apps(name)
+            out.write(json.dumps({"done": 1, "status": "Restarting server", "delay": 3000}) + "\n")
+            out.flush()
+            appomatic_appadmin.utils.reload.reload()
 
-    elif action == 'install_selected':
-        def fn(out):
-            total = len(lst) + 1
-            for idx, name in enumerate(lst):
+        def install_selected(self, out):
+            total = len(self.lst) + 1
+            for idx, name in enumerate(self.lst):
                 out.write(json.dumps({"done": 0.5 * idx / total, "status": "Installing " + name}) + "\n")
                 out.flush()
                 appomatic_appadmin.utils.app.install_pip_apps(name)
+            out.write(json.dumps({"done": 0.5, "status": "Restarting server", "delay": 3000, "next": django.core.urlresolvers.reverse("appomatic_appadmin.views.action") + "?" + self._urlencode(action="install_selected_syncdb", lst=self.lst)}) + "\n")
+            out.flush()
+            appomatic_appadmin.utils.reload.reload()
+
+        def install_selected_syncdb(self, out):
+            out.write(json.dumps({"done": 0.5, "status": "Syning database"}) + "\n")
+            out.flush()
             appomatic_appadmin.utils.action.SyncDb(out, k=0.5, m=0.5)
+            out.write(json.dumps({"done": 1, "status": "Done"}) + "\n")
+            out.flush()
 
-    elif action == 'reload':
-        def fn(out):
-            pass
+        def reload(self, out):
+            out.write(json.dumps({"done": 1, "status": "Restarting server", delay: 3000}) + "\n")
+            out.flush()
+            appomatic_appadmin.utils.reload.reload()
 
-    return django.http.HttpResponse(json.dumps({"pid": progressable(fn, reload=True)}), content_type="text/json")
+    return django.http.HttpResponse(json.dumps({"pid": progressable(getattr(Actions(request.REQUEST.getlist('_selected_action')),
+                                                                            request.REQUEST.get('action', '')))}), content_type="text/json")
 
 PROGRESS_PREFIX="appomatic_appadmin_progress_"
 
@@ -81,20 +106,12 @@ def progress(request, pid):
             output = [line[:-1] for line in f]
     return django.http.HttpResponse("[" + ',\n'.join(output) + "]", content_type="text/json")
 
-def progressable(fn, reload = False, *arg, **kw):
+def progressable(fn, *arg, **kw):
     fd, path = tempfile.mkstemp(prefix=PROGRESS_PREFIX)
     f = os.fdopen(fd, "w")
     f.write(json.dumps({"done": 0, "status": ""}) + "\n")
     f.flush()
     def wrapper():
         fn(f, *arg, **kw)
-        if reload:
-            f.write(json.dumps({"done": 0.99, "status": "Restarting server"}) + "\n")
-            f.flush()
-            # Let the client fetch the status before we unlink the file
-            time.sleep(2)
-        os.unlink(path)
-        if reload:
-            appomatic_appadmin.utils.reload.reload()
     threading.Thread(target=wrapper).start()
     return os.path.split(path)[1][len(PROGRESS_PREFIX):]

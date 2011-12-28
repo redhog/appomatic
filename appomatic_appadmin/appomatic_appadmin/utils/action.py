@@ -2,6 +2,7 @@ import os
 import re 
 import json
 import sys
+import django.core.management
 
 class OutLineFilter(object):
     class __metaclass__(type):
@@ -55,7 +56,7 @@ class OutLineFilter(object):
                 line = getattr(self, key)(line)
         return line
 
-class OutProgressFilter(OutLineFilter):
+class OutProgressFilterBase(OutLineFilter):
     def __init__(self, file, k = 1, m = 0):
         OutLineFilter.__init__(self, file)
         self.k = k
@@ -82,6 +83,8 @@ class OutProgressFilter(OutLineFilter):
             return line
         return fn
 
+class OutProgressFilter(OutProgressFilterBase):
+    exc_filter = OutProgressFilterBase.progress_to(r'Exception:.*', 1)
 
 class Action(object):
     def __init__(self, file, k = 1, m = 0, *arg, **kw):
@@ -92,7 +95,11 @@ class Action(object):
         pid = os.fork()
         if pid == 0:
             sys.stderr = sys.stdout = self.out
-            self.action(*arg, **kw)
+            try:
+                self.action(*arg, **kw)
+            except:
+                import traceback
+                traceback.print_exc()
             sys.exit(0)
         else:
             pid, status = os.waitpid(pid, 0)
@@ -115,17 +122,10 @@ class SyncDb(Action):
         x8 = OutProgressFilter.progress(r'Running migrations for .*', 0.01)
  
     def action(self):
-        import django.core.management.commands.syncdb
-        has_south = False
-        try:
-            import south.management.commands.migrate
+        has_south = 'migrate' in django.core.management.get_commands()
+        if has_south:
             self.out.k *= 0.5
-            has_south = True
-        except:
-            pass
-        c = django.core.management.commands.syncdb.Command()
-        c.handle_noargs()
+        django.core.management.call_command('syncdb')
         if has_south:
             print "Running migrations ..."
-            c = south.management.commands.migrate.Command()
-            c.handle(interactive=False, verbosity=1)
+            django.core.management.call_command('migrate')
