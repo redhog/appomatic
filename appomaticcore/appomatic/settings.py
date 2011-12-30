@@ -11,6 +11,9 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 APP_DIR = os.path.join(VIRTUALENV_DIR, "apps")
 sys.path.append(APP_DIR)
 
+if os.environ.keys().count("PYTHONPATH") == 0 :
+    os.environ["PYTHONPATH"] = ""
+
 def get_app_config_list(config_name):
     return tuple(value
                  for value in itertools.chain.from_iterable(app.get(config_name, [])
