@@ -5,3 +5,5 @@ build
 *.egg-info
 dist
 \#*
+MANIFEST.in
+__info__.py
