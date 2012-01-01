@@ -1,0 +1,5 @@
+name = "appomatic_django_filer"
+description = "."
+keywords = "appomatic django-filer"
+url = "http://django-filer.readthedocs.org"
+install_requires = ['django_filer']
