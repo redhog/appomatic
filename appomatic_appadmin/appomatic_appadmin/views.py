@@ -4,6 +4,8 @@ import settings
 import appomatic_appadmin.utils.app
 import appomatic_appadmin.utils.reload
 import django.contrib.messages
+import pkg_resources as res
+import appomatic
 
 def apps_by_source(apps):
     res = {}
@@ -14,6 +16,8 @@ def apps_by_source(apps):
     return res
 
 def index(request):
+    
+    
     action = request.POST.get('action', '')
 
     if action == 'uninstall_selected':
@@ -48,3 +52,29 @@ def add(request):
         'appomatic_appadmin/add.html',
         {"q": query, "found_apps": found_apps},
         context_instance=django.template.RequestContext(request))
+        
+def details(request, app_name):
+    deps = appomatic_appadmin.utils.app.get_dependant(app_name)
+    appomatic_deps = []
+    appomatic_reqs = []
+    temp =[]
+    for i in deps:
+        if i.startswith('appomatic'):
+            appomatic_deps += [i]
+        else:
+            temp += [i]
+    deps = temp
+
+    temp = []
+    reqs = appomatic_appadmin.utils.app.get_requirements(app_name)
+    for i in reqs:
+        if i.startswith('appomatic'):
+            appomatic_reqs += [i]
+        else:
+            temp += [i]
+    reqs = temp
+    
+    return django.shortcuts.render_to_response('appomatic_appadmin/details.html',
+                    {'app_name' : app_name, 'reqs': reqs, 'deps': deps , 'appomatic_deps': appomatic_deps, 'appomatic_reqs': appomatic_reqs},
+                    context_instance = django.template.RequestContext(request)
+                    )
