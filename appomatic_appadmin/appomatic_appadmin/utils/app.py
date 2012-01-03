@@ -105,7 +105,9 @@ def uninstall_pip_apps(*apps):
                 pip.req.InstallRequirement.from_line(name))
         for i in  dependants:
             if requirement_set.requirements.keys().count(i.replace('_','-')) == 0 :
- 
+                requirement_set.add_requirement(
+                    pip.req.InstallRequirement.from_line(i))
+    
     requirement_set.uninstall(auto_confirm=True)
     
     result = list(set(result))
