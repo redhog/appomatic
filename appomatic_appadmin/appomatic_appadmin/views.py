@@ -122,7 +122,7 @@ def action(request):
             out.flush()
 
         def reload(self, out):
-            out.write(json.dumps({"done": 1, "status": "Restarting server", delay: 3000}) + "\n")
+            out.write(json.dumps({"done": 1, "status": "Restarting server", 'delay': 3000}) + "\n")
             out.flush()
             appomatic_appadmin.utils.reload.reload()
 
