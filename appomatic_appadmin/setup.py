@@ -11,7 +11,7 @@ PKG_NAME = os.path.basename(PKG_DIR)
 
 # Update *this* script if we can
 SRC = os.path.join(PKG_DIR, '../scripts/setup.py')
-if os.path.exists(SRC) and os.stat(SRC).st_mtime != os.stat(__file__).st_mtime:
+if os.path.exists(SRC) and (os.stat(SRC).st_mtime != os.stat(__file__).st_mtime):
     print os.stat(SRC).st_mtime, " != ", os.stat(__file__).st_mtime
     os.remove(__file__)
     shutil.copy2(SRC, __file__)

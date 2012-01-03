@@ -125,7 +125,7 @@ class SyncDb(Action):
         has_south = 'migrate' in django.core.management.get_commands()
         if has_south:
             self.out.k *= 0.5
-        django.core.management.call_command('syncdb')
+        django.core.management.call_command('syncdb', interactive=False)
         if has_south:
             print "Running migrations ..."
             django.core.management.call_command('migrate')
