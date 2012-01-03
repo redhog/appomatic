@@ -1,0 +1,5 @@
+name = "appomatic_mptt"
+description = "Utilities for implementing Modified Preorder Tree Traversal with your Django Models."
+keywords = "appomatic django-mptt"
+url = "https://github.com/django-mptt/django-mptt/"
+install_requires = []
