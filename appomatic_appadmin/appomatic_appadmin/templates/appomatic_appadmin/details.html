@@ -1,0 +1,90 @@
+{% extends "admin/base_site.html" %}
+{% load adminmedia admin_list i18n %}
+
+
+{% if not is_popup %}
+  {% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href="../../../">
+        {% trans "Home" %}
+      </a>
+       &rsaquo;
+       <a href="../../">
+         Appomatic
+      </a>
+      &rsaquo;
+      <a href='../'>
+      Applications
+      </a>
+      &rsaquo;
+      {{ app_name }}
+    </div>
+  {% endblock %}
+{% endif %}
+
+{% block content %}
+
+    <h1>
+        {{ app_name }}
+    </h1>
+
+    {% if reqs|length > 0 or appomatic_reqs|length > 0 %}
+        <div id='requirements'>
+            <h2>{% trans 'Requirements' %}:</h2>
+            <table>
+            {% if appomatic_reqs|length > 0 %}
+                <tr>
+                    <th> Appomatic apps </th>
+                </tr>
+
+                {% for i in appomatic_reqs %}
+                    <tr>
+                        <td> {{ i }} </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            {% if reqs|length > 0 %}
+                    <tr>
+                        <th> Apps</th>
+                    </tr>
+                {% for i in reqs %}
+                    <tr> 
+                        <td> {{ i }} </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </table>
+        </div>
+    {% endif %}
+    
+    {% if deps|length > 0 or appomatic_deps|length > 0 %}
+        <div id='dependants'>
+            <h2>{% trans 'Dependant apps' %}:</h2>
+            <table>
+            {% if appomatic_deps|length > 0 %}
+                <tr>
+                    <th> Appomatic apps </th>
+                </tr>
+
+                {% for i in appomatic_deps %}
+                    <tr>
+                        <td> {{ i }} </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            {% if deps|length > 0 %}
+                    <tr>
+                        <th> Apps</th>
+                    </tr>
+                {% for i in deps %}
+                    <tr> 
+                        <td> {{ i }} </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
