@@ -24,7 +24,6 @@ if os.path.exists(SRC):
     if hashes['us'].digest() != hashes['them'].digest():
         print 'Warning: setup.py is outdated, md5 hashes differ:', hashes['us'].hexdigest(), '!=', hashes['them'].hexdigest()
         print 'Replacing setup.py with fresh version from appomatic/scripts.'
-        print
         os.remove(__file__)
         shutil.copy2(SRC, __file__)
         with open(__file__) as f:
