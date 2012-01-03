@@ -23,15 +23,6 @@ def apps_by_source(apps):
 
 def index(request):
     
-    
-    action = request.POST.get('action', '')
-
-    if action == 'uninstall_selected':
-        for name in appomatic_appadmin.utils.app.uninstall_pip_apps(
-            *request.POST.getlist('_selected_action')):
-            django.contrib.messages.add_message(request, django.contrib.messages.INFO, 'Successfully uninstalled %s' % (name,))
-        appomatic_appadmin.utils.reload.reload(2)
-
     return django.shortcuts.render_to_response(
         'appomatic_appadmin/index.html',
         {"installed_apps": apps_by_source(settings.APPOMATIC_APPS),
@@ -95,6 +86,12 @@ def action(request):
             return urllib.urlencode(data)
 
         def uninstall_selected(self, out):
+            temp = []
+            for i in self.lst:
+                temp += appomatic_appadmin.utils.app.get_dependant(i)
+            
+            self.lst += temp 
+            self.lst = list(set(self.lst))   
             total = len(self.lst) + 1
             for idx, name in enumerate(self.lst):
                 out.write(json.dumps({"done": idx / total, "status": "Uninstalling " + name}) + "\n")
