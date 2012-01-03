@@ -3,7 +3,7 @@ import tagging
 import tagging.fields
 import django.db.models
 
-cms.models.Page.add_to_class('tag_field', tagging.fields.TagField())
+cms.models.Page.add_to_class('tag_field', tagging.fields.TagField(default=''))
 tagging.register(cms.models.Page)
 
 

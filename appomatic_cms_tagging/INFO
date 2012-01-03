@@ -1,0 +1,4 @@
+name = "appomatic_cms_tagging"
+description = "Adds tagging support to django-cms"
+keywords = "appomatic django-tagging django-cms"
+install_requires = ['appomatic-django-cms', 'appomatic-tagging']

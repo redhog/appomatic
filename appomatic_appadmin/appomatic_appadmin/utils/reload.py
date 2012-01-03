@@ -12,6 +12,10 @@ def code_changed():
 django.utils.autoreload.code_changed = code_changed
 
 def reload(timeout = None):
+    #print "============================{REALOAD}============================"
+    #import traceback
+    #traceback.print_stack()
+
     if "RUN_MAIN" in os.environ:
         # We're running under the normal dev server with the auto-reloader enabled
         def reload():
@@ -26,6 +30,7 @@ def reload(timeout = None):
     else:
         class Thread(threading.Thread):
             def run(self, *arg, **kw):
-                time.sleep(timeout)
+                if timeout:
+                    time.sleep(timeout)
                 reload()
         Thread().start()
