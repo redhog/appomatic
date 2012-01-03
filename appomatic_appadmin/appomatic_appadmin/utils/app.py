@@ -8,6 +8,8 @@ import pip.req
 import pip.locations
 import pip.index
 
+import pkg_resources as resources
+import appomatic
 def compare_versions(version1, version2):
     try:
         return cmp(distutils.version.StrictVersion(version1), distutils.version.StrictVersion(version2))
@@ -89,14 +91,74 @@ def install_pip_apps(*apps):
 
 def uninstall_pip_apps(*apps):
     if not apps: return
-
+    result = []
+    result += apps
     requirement_set = pip.req.RequirementSet(
         build_dir = None,
         src_dir = None,
         download_dir = None)
     for name in apps:
-        requirement_set.add_requirement(
-            pip.req.InstallRequirement.from_line(name))
+        dependants = get_dependant(name)
+        result += dependants
+        if requirement_set.requirements.keys().count(name.replace('_','-')) == 0 :
+            requirement_set.add_requirement(
+                pip.req.InstallRequirement.from_line(name))
+        for i in  dependants:
+            if requirement_set.requirements.keys().count(i.replace('_','-')) == 0 :
+                requirement_set.add_requirement(
+                    pip.req.InstallRequirement.from_line(i))
+    
     requirement_set.uninstall(auto_confirm=True)
+    
+    result = list(set(result))
+    return result
+    
+def get_dependants_list():
+    installed_apps = list(appomatic.utils.app.get_pip_apps())
+    apps = []
+    dependencies = {}
+    
+    for i in installed_apps:
+        apps.append(i['NAME'])
+        dependencies[i['NAME']] = []
+    
+    
+    for i in apps:
+        reqs = resources.get_distribution(i).requires()
+        for req in reqs:
+            if (dependencies.keys().count(req.key.replace("-","_")) == 0):
+                dependencies[req.key.replace("-","_")] = []
+            dependencies[req.key.replace("-","_")].append(i)
+    
+    return dependencies
 
-    return apps
+def get_requirements(app_name):
+    try:
+        tmp = resources.get_distribution(app_name).requires()
+    except:
+        return []
+    res = []
+    for i in tmp :
+        res.append(i.key.replace("-","_"))
+    
+    return res
+
+
+def get_apps():
+    res = []
+    for i in list(appomatic.utils.app.get_pip_apps()):
+        res.append(i['NAME'])
+    return res
+
+def get_dependant(name):
+    deps = get_dependants_list()
+    try:
+        tmp = deps[name]
+    except:
+        return []
+    res = tmp
+    for i in tmp :
+        tmp1 = get_dependant(i)
+        res += tmp1
+    res = list(set(res))
+    return res
