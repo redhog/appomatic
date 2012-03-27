@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 from django.core.management import execute_manager
 import os.path
+import sys
 
-os.chdir(os.path.dirname(__file__))
+if sys.argv[1] not in ('makemessages', 'compilemessages'):
+    os.chdir(os.path.dirname(__file__))
+
 import settings
 
 def main():

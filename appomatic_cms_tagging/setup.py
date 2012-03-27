@@ -5,19 +5,31 @@ from setuptools import setup, find_packages
 import shutil
 import os.path
 import sys
+import hashlib
 
 PKG_DIR = os.path.abspath(os.path.dirname(__file__))
 PKG_NAME = os.path.basename(PKG_DIR)
 
 # Update *this* script if we can
 SRC = os.path.join(PKG_DIR, '../scripts/setup.py')
-if os.path.exists(SRC) and os.stat(SRC).st_mtime != os.stat(__file__).st_mtime:
-    print os.stat(SRC).st_mtime, " != ", os.stat(__file__).st_mtime
-    os.remove(__file__)
-    shutil.copy2(SRC, __file__)
+if os.path.exists(SRC):
+    # Check file hashes to see if they are the same.
+    hashes = {}
     with open(__file__) as f:
-        exec f
-    sys.exit(0)
+        hashes['us'] = hashlib.md5(f.read())
+    with open(SRC) as f:
+        hashes['them'] = hashlib.md5(f.read())
+
+    # We have an old version, update.
+    if hashes['us'].digest() != hashes['them'].digest():
+        print 'Warning: setup.py is outdated, md5 hashes differ:', hashes['us'].hexdigest(), '!=', hashes['them'].hexdigest()
+        print 'Replacing setup.py with fresh version from appomatic/scripts.'
+        print
+        os.remove(__file__)
+        shutil.copy2(SRC, __file__)
+        with open(__file__) as f:
+            exec f
+        sys.exit(0)
 
 # Make it possible to overide script wrapping
 old_is_python_script = easy_install.is_python_script
