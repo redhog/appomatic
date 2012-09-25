@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Appomatic by redhog</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/redhog/appomatic">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Appomatic</h1>
+            <h2>The appomatic automatic Django environment</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/redhog/appomatic/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/redhog/appomatic/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <p>Appomatic automates and abstracts away most of the boilerplate code and code generation of a typical Django project, reduces the amount of settings.py clutter and allows for distributing self contained single-click installable Django apps.</p>
+
+<h3>Installation</h3>
+
+<p>To install, run the following commands in a terminal (replace $NAME with any name
+you see fit):</p>
+
+<p>virtualenv $NAME
+   cd $NAME
+   . bin/activate
+   pip install appomatic
+   appomatic syncdb
+   appomatic runserver</p>
+
+<p>In a web-browser, go to localhost:8000/admin and log in with the
+username/password you entered in the syncdb step above. Click on
+"Applications" then "Download new applications" to install some
+usefull applications for your new site.</p>
+
+<h3>Writing your own Appomatic apps</h3>
+
+<p>Every Appomatic app is a pip package, named "appomatic<em>$NAME". It should contain one Python package of the same name, which in turn should contain a file named __app</em><em>.py, and optionally a file named __settings</em><em>.py and one named __urls</em><em>.py. __app</em><em>.py describes how the app is integrated with other apps (which order they are imported in etc), while the content of __settings</em><em>.py and __urls</em><em>.py is imported into settings.py and urls.py respectively. For good examples, check out the appomatic</em>* subdirectories inside the git repo :)</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/redhog">redhog</a> can be found on <a href="https://github.com/redhog/appomatic">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
