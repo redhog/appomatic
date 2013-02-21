@@ -101,8 +101,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 ) + get_app_config_list('MIDDLEWARE_CLASSES')
 
+import django
+if django.VERSION[0] >= 1 and django.VERSION[1] >= 4:
+    TEMPLATE_CONTEXT_PROCESSOR_AUTH = 'django.contrib.auth.context_processors.auth'
+else:
+    TEMPLATE_CONTEXT_PROCESSOR_AUTH = 'django.core.context_processors.auth'
+
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.auth',
+    TEMPLATE_CONTEXT_PROCESSOR_AUTH,
     'django.core.context_processors.i18n',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
