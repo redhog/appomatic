@@ -1,6 +1,12 @@
-from django.conf.urls.defaults import *
 from django.conf import settings
 import os.path
+
+try:
+    # Django < 1.5
+    from django.conf.urls.defaults import *
+except:
+    # Django >= 1.5
+    from django.conf.urls import *
 
 urlpatterns = patterns('',
     *(url(r'^', include('%s.__urls__' % (app['NAME'],)))
@@ -15,4 +21,3 @@ if settings.DEBUG:
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
         url(r'', include('django.contrib.staticfiles.urls')),
     )
-
