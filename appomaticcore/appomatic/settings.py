@@ -115,7 +115,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
 ) + get_app_config_list('TEMPLATE_CONTEXT_PROCESSORS')
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'appomatic.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, 'templates'),

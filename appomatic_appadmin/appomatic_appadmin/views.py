@@ -1,6 +1,5 @@
 import django.shortcuts
 import django.template
-import settings
 import appomatic_appadmin.utils.app
 import appomatic_appadmin.utils.reload
 import django.contrib.messages
@@ -12,6 +11,7 @@ import json
 import time
 import appomatic_appadmin.utils.action
 import urllib
+from django.conf import settings
 
 def apps_by_source(apps):
     res = {}
