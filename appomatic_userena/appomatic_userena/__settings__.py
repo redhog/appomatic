@@ -9,4 +9,4 @@ LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
 
-AUTH_PROFILE_MODULE="appomatic_userena.models.Profile"
+AUTH_PROFILE_MODULE="appomatic_userena.Profile"
