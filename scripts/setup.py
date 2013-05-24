@@ -39,25 +39,19 @@ def is_python_script(script_text, filename):
     return old_is_python_script(script_text, filename)
 easy_install.is_python_script = is_python_script
 
-if os.path.exists(os.path.join(PKG_DIR, '../INFO')):
-    with open(os.path.join(PKG_DIR, '../INFO')) as f:
-        data = f.read()
-    with open(os.path.join(PKG_DIR, 'INFO')) as f:
-        data += f.read()
-    with open(os.path.join(PKG_DIR, '__info__.py'), "w") as f:
-        f.write(data)
-
 if os.path.exists(os.path.join(PKG_DIR, '../scripts/manifest.in.template')):
     shutil.copyfile(os.path.join(PKG_DIR, '../scripts/manifest.in.template'),
                     os.path.join(PKG_DIR, 'MANIFEST.in'))
 
-def load_info(path):
+def load_info(*paths):
     info = {}
-    with open(path) as f:
-        exec f in info
-    for name in globals().keys():
-        if name in info:
-            del info[name]
+    for path in paths:
+        if not os.path.exists(path): continue
+        with open(path) as f:
+            exec f in info
+        for name in globals().keys():
+            if name in info:
+                del info[name]
     return info
 
 info = {
@@ -66,5 +60,10 @@ info = {
     "package_data": {'': ['*.txt', '*.css', '*.html', '*.js']},
     "include_package_data": True,
 }
-info.update(load_info(os.path.join(PKG_DIR, '__info__.py')))
+
+info.update(load_info(os.path.join(PKG_DIR, '../INFO'), os.path.join(PKG_DIR, 'INFO')))
+
+if info['name'] != 'appomaticcore':
+    info['install_requires'] = list(info.get('install_requires', [])) + ['appomaticcore==%s' % info['version']]
+
 setup(**info)

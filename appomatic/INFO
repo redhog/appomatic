@@ -1,4 +1,4 @@
 name = "appomatic"
 description = "Appomatic is a userfriendly Django environment with automatic plugin (app) management based on pip."
 keywords = "appomatic django apps pip"
-install_requires = ['appomaticcore', 'appomatic_appadmin']
+install_requires = ['appomatic_appadmin=='+version]

@@ -1,4 +1,4 @@
 name = "appomatic_appadmin"
 description = "Django admin page to administer appomatic apps"
 keywords = "appomatic django-admin"
-install_requires = ['appomatic', 'appomatic_admin']
+install_requires = ['appomatic_admin=='+version]
