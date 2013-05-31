@@ -67,4 +67,8 @@ info = {
     "include_package_data": True,
 }
 info.update(load_info(os.path.join(PKG_DIR, '__info__.py')))
+
+if info['name'] != 'appomaticcore':
+    info['install_requires'] = list(info.get('install_requires', [])) + ['appomaticcore==%s' % info['version']]
+
 setup(**info)
