@@ -1,6 +1,7 @@
 import os.path
 
 CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, "uploads")
+if not os.path.exists(CKEDITOR_UPLOAD_PATH): os.makedirs(CKEDITOR_UPLOAD_PATH)
 
 CKEDITOR_CONFIGS = {
     'default': {
