@@ -1,5 +1,5 @@
 name = "appomatic_autocomplete"
-description = "."
+description = "AutoComplete for ForeignKey and ManyToManyField."
 keywords = "appomatic autocomplete foreignkeys"
 url = "https://github.com/redhog/django-autocomplete"
 install_requires = ['django_autocomplete_foreignkey']
