@@ -1,0 +1,5 @@
+name = "appomatic_ckeditor"
+description = "Django admin CKEditor integration."
+keywords = "appomatic ckeditor"
+url = "http://github.com/shaunsephton/django-ckeditor"
+install_requires = ['django-ckeditor']
