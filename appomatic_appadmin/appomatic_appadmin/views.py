@@ -145,6 +145,16 @@ def progressable(fn, *arg, **kw):
     f.write(json.dumps({"done": 0, "status": ""}) + "\n")
     f.flush()
     def wrapper():
-        fn(f, *arg, **kw)
+        try:
+            fn(f, *arg, **kw)
+        except Exception, e:
+            f.write(json.dumps({"done": 1, "status": str(e), "delay": 10000}) + "\n")
+
     threading.Thread(target=wrapper).start()
     return os.path.split(path)[1][len(PROGRESS_PREFIX):]
+
+def progress_display(request, pid):
+    return django.shortcuts.render_to_response('appomatic_appadmin/progress_display.html',
+                    {"pid": pid, "next": request.GET.get("next", request.META.get('HTTP_REFERER', None)), "description": request.GET.get("description", "")},
+                    context_instance = django.template.RequestContext(request)
+                    )

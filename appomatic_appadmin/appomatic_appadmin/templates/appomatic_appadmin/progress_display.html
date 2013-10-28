@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list i18n %}
+{% load url from future %}
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/changelists.css" />
+  {{ media.css }}
+  <script type="text/javascript" src="{% get_static_prefix %}appomatic_appadmin/js/jquery.js"></script>
+  <script type="text/javascript" src="{% get_static_prefix %}appomatic_appadmin/js/progress.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}appomatic_appadmin/css/progress.css" />
+{% endblock %}
+
+{% if not is_popup %}
+  {% block breadcrumbs %}
+    <div class="breadcrumbs">
+      Action in progress...
+    </div>
+  {% endblock %}
+{% endif %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+  <script>
+    progressPopup("{{description}}");
+    displayProgress("{{pid}}");
+    function progressDone() {
+      window.location = "{{next}}";
+    }
+  </script>
+{% endblock %}
