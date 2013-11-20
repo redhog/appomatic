@@ -1,3 +1,2 @@
 include __info__.py
-recursive-include templates *
-recursive-include static *
+recursive-include . *.txt *.css *.html *.js
