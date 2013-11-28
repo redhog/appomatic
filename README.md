@@ -31,7 +31,7 @@ In addition, it can contain all the "normal" django app files, such as models.py
 
 So, with this, you can create a single-directory app that gets loaded automatically, and can add stuff to settings.py and urls.py. But distributing this would still be rather clunky by itself. Appomatic supports pip packages, so all you need to do is to make a pip package, named appomatic_SOMENAME that installs a single python module, name appomatic_SOMENAME, that contains the files from above (_ _ app _ _.py etc). An installed such pip package will be auto discovered just like modules under the apps directory.
 
-# What you can do with _ _ apps _ _.py
+## What you can do with _ _ apps _ _.py
 ```
     INSTALLED_APPS = ["some_django_app_name", "some_other_name"]
 ```
@@ -46,7 +46,7 @@ Treats this directory as a directory of apps instead of as an app, recursively l
 ```
 Causes appomatic_OTHERAPP1 and appomatic_OTHERAPP2, if installed, to be sorted before this app in INSTALLED_APPS (and in urls.py and settings.py), and appomatic_OTHERAPP3 and appomatic_OTHERAPP4 to be sorted after this app.
 
-# Special stuff to do with _ _ settings _ _.py
+## Special stuff to do with _ _ settings _ _.py
 ```
     SOME_NAME = get_app_config_list('SOME_NAME')
 ```
@@ -62,3 +62,36 @@ This will extract the variable SOME_NAME from _ _ app _ _.py in all installed ap
         'django.contrib.comments',
     ) + get_app_config_list('INSTALLED_APPS')
 ```
+
+# Config apps
+
+It is usually necessary to add some configuration to a django project that is entierly site-specific, like a database config. This can easily be done as an non-packaged auto-discoverable app:
+
+    apps/appomatic_config/__init__.py
+    apps/appomatic_config/__app__.py
+    apps/appomatic_config/__settings__.py
+
+The first file would be empty, and the second would be too in most cases, while _ _ settings _ _.py would contain the database config.
+
+# Using appomatic with google appengine
+
+To use appomatic with google appengine you need to use Cloud SQL. Start by setting up an appengine project and a cloud sql instance. Using the mysql command line tool create a database in the cloud sql instance.
+
+Download the SDK and install it according to googles instructions. Make sure to add its location to PATH according to googles instructions. Then create a virtualenv for appomatic, and install appomatic in it according to the instructions above.
+
+Copy contrib/appomatic_config_gae from this git repo to to VIRTUALENV_ROOT/apps/appomatic_config_gae and edit _ _ settings _ _.py inside it to match your cloud sql instance.
+
+Copy contrib/app.yaml from this git repo to the root of the virtualenv. Edit it to match your appengine project (change the app id at the top).
+
+You should now be able to test the configuration from your local machine:
+
+    appomatic syncdb
+    dev_appserver.py app.yaml 
+
+and deploy to appengine:
+
+    appcfg.py update .
+
+
+
+
