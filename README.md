@@ -62,3 +62,26 @@ This will extract the variable SOME_NAME from _ _ app _ _.py in all installed ap
         'django.contrib.comments',
     ) + get_app_config_list('INSTALLED_APPS')
 ```
+
+# Using appomatic with google appengine
+
+To use appomatic with google appengine you need to use Cloud SQL. Start by setting up an appengine project and a cloud sql instance. Using the mysql command line tool create a database in the cloud sql instance.
+
+Download the SDK and install it according to googles instructions. Make sure to add its location to PATH according to googles instructions. Then create a virtualenv for appomatic, and install appomatic in it according to the instructions above.
+
+Copy contrib/appomatic_config_gae from this git repo to to VIRTUALENV_ROOT/apps/appomatic_config_gae and edit __settings__py inside it to match your cloud sql instance.
+
+Copy contrib/app.yaml from this git repo to the root of the virtualenv. Edit it to match your appengine project (change the app id at the top).
+
+You should now be able to test the configuration from your local machine:
+
+    appomatic syncdb
+    dev_appserver.py app.yaml 
+
+and deploy to appengine:
+
+    appcfg.py update .
+
+
+
+
