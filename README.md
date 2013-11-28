@@ -69,7 +69,7 @@ To use appomatic with google appengine you need to use Cloud SQL. Start by setti
 
 Download the SDK and install it according to googles instructions. Make sure to add its location to PATH according to googles instructions. Then create a virtualenv for appomatic, and install appomatic in it according to the instructions above.
 
-Copy contrib/appomatic_config_gae from this git repo to to VIRTUALENV_ROOT/apps/appomatic_config_gae and edit __settings__py inside it to match your cloud sql instance.
+Copy contrib/appomatic_config_gae from this git repo to to VIRTUALENV_ROOT/apps/appomatic_config_gae and edit _ _ settings _ _.py inside it to match your cloud sql instance.
 
 Copy contrib/app.yaml from this git repo to the root of the virtualenv. Edit it to match your appengine project (change the app id at the top).
 
