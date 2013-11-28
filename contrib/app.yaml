@@ -1,0 +1,45 @@
+application: some-application-name-replace-before-deploying
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+builtins:
+- remote_api: on
+
+inbound_services:
+- warmup
+
+libraries:
+- name: django
+  version: latest
+- name: ssl
+  version: latest
+- name: MySQLdb
+  version: latest
+
+handlers:
+
+- url: /media/admin
+  static_dir: lib/python2.7/site-packages/django/contrib/admin/media
+  expiration: '0'
+
+- url: /static/admin
+  static_dir: lib/python2.7/site-packages/django/contrib/admin/static/admin
+  expiration: '0'
+
+- url: /.*
+  script: bin.wsgi.application
+
+skip_files:
+# From defaults
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+
+# Ignore mysql driver (we need to use the driver from google)
+- ^.*/site-packages/MySQL.*
+- ^.*/site-packages/_mysql.*
+- ^src.*
