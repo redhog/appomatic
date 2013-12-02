@@ -17,6 +17,8 @@ libraries:
   version: latest
 - name: MySQLdb
   version: latest
+- name: PIL
+  version: latest
 
 handlers:
 
@@ -39,7 +41,12 @@ skip_files:
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
 
-# Ignore mysql driver (we need to use the driver from google)
+# Ignore the mysql driver and other files provided by google
+- ^local.*
+- ^include.*
+- ^src.*
+- ^.*/python[0-9.]*/[^/]*\.py$
 - ^.*/site-packages/MySQL.*
 - ^.*/site-packages/_mysql.*
-- ^src.*
+- ^.*/site-packages/PIL.*
+- ^.*/site-packages/Pillow.*
