@@ -129,8 +129,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.comments',
+    'django.contrib.staticfiles'
 ) + get_app_config_list('INSTALLED_APPS')
 
 for part in APPOMATIC_APP_PARTS:
