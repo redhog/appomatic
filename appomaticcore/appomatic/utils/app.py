@@ -1,5 +1,5 @@
 import pkg_resources
-import pip.util
+import pip
 import appomatic.utils.topsort
 import appomatic.utils.forrest
 import os
@@ -12,7 +12,7 @@ def get_pip_apps(prefix = 'appomatic_'):
         if dist.has_metadata('dependency_links.txt'):
             dependency_links.extend(dist.get_metadata_lines('dependency_links.txt'))
     installations = {}
-    for dist in pip.util.get_installed_distributions(local_only=True):
+    for dist in pip.get_installed_distributions(local_only=True):
         req = pip.FrozenRequirement.from_dist(dist, dependency_links, find_tags=False)
         installations[req.name] = req
     for installation in sorted(installations.values(), key=lambda x: x.name):
